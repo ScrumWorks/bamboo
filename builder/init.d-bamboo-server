@@ -25,8 +25,11 @@ start_service() {
   echo -n " * Starting $SERVICE_NAME... "
   cd /opt/bamboo/
   sleep 10
-  daemon --pidfile="$PIDFILE" $DAEMON $DAEMON_OPTS
+#  daemon --pidfile="$PIDFILE" $DAEMON $DAEMON_OPTS
 #  start-stop-daemon --quiet --background --start --pidfile "$PIDFILE" --make-pidfile --exec $DAEMON -- $DAEMON_OPTS
+  nohup $DAEMON $DAEMON_OPTS >/dev/null &
+  echo $! > $PIDFILE
+
   e=$?
   if [ $e -eq 1 ]; then
     echo "already running"
