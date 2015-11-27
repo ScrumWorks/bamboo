@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DATADIR="/var/bamboo"
+USER="bamboo"
+SHELL="/bin/false"
+
+set -e
+
+if getent passwd ${USER}; then
+	userdel ${USER}
+fi
+
+if getent group ${USER}; then
+	groupdel ${USER}
+fi

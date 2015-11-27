@@ -9,9 +9,11 @@
 # Description:       bamboo server
 ### END INIT INFO
 
+. /etc/rc.d/init.d/functions
+
 SERVICE_NAME=bamboo-service
 DAEMON=/opt/bamboo/bamboo
-DAEMON_OPTS="-config /var/bamboo/production.json -log /var/bamboo/log/bamboo-server.log"
+DAEMON_OPTS="-config /etc/bamboo/production.json -log /var/log/bamboo-server.log -bind 127.0.0.1:2255"
 PIDFILE=/var/run/bamboo.pid
 
 if [ ! -x $DAEMON ]; then
@@ -23,7 +25,8 @@ start_service() {
   echo -n " * Starting $SERVICE_NAME... "
   cd /opt/bamboo/
   sleep 10
-  start-stop-daemon --quiet --background --start --pidfile "$PIDFILE" --make-pidfile --exec $DAEMON -- $DAEMON_OPTS
+  daemon --pidfile="$PIDFILE" $DAEMON $DAEMON_OPTS
+#  start-stop-daemon --quiet --background --start --pidfile "$PIDFILE" --make-pidfile --exec $DAEMON -- $DAEMON_OPTS
   e=$?
   if [ $e -eq 1 ]; then
     echo "already running"
@@ -40,7 +43,8 @@ start_service() {
 
 stop_service() {
   echo -n " * Stopping $SERVICE_NAME... "
-  start-stop-daemon -Kq -R 10 -p $PIDFILE
+#  start-stop-daemon -Kq -R 10 -p $PIDFILE
+  killproc -p $PIDFILE -d 10 $DAEMON
   e=$?
   if [ $e -eq 1 ]; then
     echo "not running"

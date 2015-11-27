@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Restartuj sluzbu
+service haproxy reload
+sleep 1
+
+# Zabij vsechny ostatni procesy haproxy, aby neotravovaly
+omit=`cat /var/run/haproxy.pid`
+for i in `pidof /usr/sbin/haproxy`; do
+    if [[ $i -eq $omit ]]; then continue; fi
+    kill -9 $i
+done
+
+# Jen pro jistotu, kdybychom zabili haproxy
+service haproxy status || service haproxy restart

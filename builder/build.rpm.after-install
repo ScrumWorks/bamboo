@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+LOG_DIR=/var/log/bamboo
+CONF_DIR=/etc/bamboo
+HOME_DIR=/opt/bamboo
+USER=bamboo
+
+case "$1" in
+	1|2)
+		if [ ! -d ${LOG_DIR} ]; then
+			mkdir -p ${LOG_DIR}
+		fi
+
+		cp -n ${CONF_DIR}/haproxy_template.webmisto.cfg ${CONF_DIR}/haproxy_template.cfg
+#		cp -n ${CONF_DIR}/production.example.json ${CONF_DIR}/production.json
+
+		if ! getent group $USER >/dev/null; then
+			groupadd --system bamboo
+		fi
+
+		if ! getent passwd $USER >/dev/null; then
+			adduser -r -d $HOME_DIR --shell /bin/false -g $USER $USER
+		fi
+
+		chown $USER:$USER -R $HOME_DIR
+	;;
+esac

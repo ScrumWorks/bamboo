@@ -11,7 +11,7 @@ license="Apache Software License 2.0"
 package_version=${_BAMBOO_PKGVERSION:-"-1"}
 origdir="$(pwd)"
 workspace="builder"
-pkgtype=${_PKGTYPE:-"deb"}
+pkgtype="rpm"
 builddir="build"
 installdir="opt"
 outputdir="output"
@@ -37,7 +37,8 @@ function build() {
     chmod 755 ${name}/${installdir}/bamboo/bamboo
 
     # Link default confiugration
-    cp -rp ${origdir}/config/* ${name}/${installdir}/bamboo/config/.
+    mkdir -p ${name}/etc/bamboo
+    cp -rp ${origdir}/config/* ${name}/etc/bamboo/
 
     # Distribute UI webapp
     mkdir -p ${name}/${installdir}/bamboo/webapp
@@ -60,15 +61,20 @@ function mkdeb() {
     -a ${arch} \
     --category ${section} \
     --vendor "Qubit" \
-    --after-install ../../build.after-install \
-    --after-remove  ../../build.after-remove \
+    --after-install ../../build.rpm.after-install \
+    --after-remove  ../../build.rpm.after-remove \
     --before-remove ../../build.before-remove \
     -m "${USER}@${HOSTNAME}" \
-    --deb-upstart ../../bamboo-server \
     --license "${license}" \
     --prefix=/ \
     -s dir \
-    -- .
+    -- \
+    ../../init.d-bamboo-server=/etc/init.d/bamboo-server \
+    ../../haproxy-restart-wrapper=/usr/local/bin/ \
+    .
+
+#    --deb-upstart ../../bamboo-server \
+
   mkdir -p ${origdir}/${outputdir}
   mv ${name}*.${pkgtype} ${origdir}/${outputdir}/
   popd
