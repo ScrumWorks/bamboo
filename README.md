@@ -1,3 +1,10 @@
+# How to build
+
+Follow the ci-jenkins script. Just call build.rpm.sh instead of build.sh
+
+
+
+
 # Bamboo  [![Build Status](https://travis-ci.org/QubitProducts/bamboo.svg?branch=master)](https://travis-ci.org/QubitProducts/bamboo) [![Coverage Status](https://coveralls.io/repos/QubitProducts/bamboo/badge.svg?branch=coverage&service=github)](https://coveralls.io/github/QubitProducts/bamboo?branch=coverage)
 
 ![bamboo-logo](https://cloud.githubusercontent.com/assets/37033/4110258/a8cc58bc-31ef-11e4-87c9-dd20bd2468c2.png)
